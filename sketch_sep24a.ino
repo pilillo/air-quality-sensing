@@ -19,13 +19,10 @@
 
 WiFiManager wifiManager;
 
-LiquidCrystal_I2C lcd(0x3F, 16, 2);
-//LiquidCrystal_I2C lcd(0x27, 20, 4);
+LiquidCrystal_I2C lcd(0x3F, WIDTH, HEIGHT);
+//LiquidCrystal_I2C lcd(0x27, WIDTH, HEIGHT);
 
-void init_display(int width, int height){
-  //lcd.begin(16,2);
-  //lcd.begin(20,4);
-  
+void init_display(int width, int height){  
   //lcd.begin(width, height);
   lcd.init();
   lcd.setCursor(0, 0);
@@ -33,6 +30,7 @@ void init_display(int width, int height){
   
   // Turn on the backlight.
   lcd.backlight();
+  // lcd.noBacklight(); // to turn off
 }
 
 //gets called when WiFiManager enters configuration mode
@@ -84,10 +82,11 @@ void init_dust_sensor(int rx, int tx){
   //Serial.begin(9600);
 }
 
-void read_dust_sensor(){
-  float pm10, pm25;
-  int error;
 
+float pm10, pm25;
+int error;
+
+void read_dust_sensor(){
   error = my_sds.read(&pm25, &pm10);
   if (!error) {
     lcd.setCursor(0, 0);
@@ -98,6 +97,12 @@ void read_dust_sensor(){
   delay(100);
 }
 
+void send_measurements(){
+  if(!error){
+      
+  }
+}
+
 void setup() {
   // to reset the previously stored password for debugging reasons
   //WiFi.disconnect();
@@ -106,26 +111,10 @@ void setup() {
   //init_wifi();
   //attempt_connect();
   init_dust_sensor(D6, D7);
-  
 }
 
 void loop() {
-  /*
-   lcd.clear();
-   lcd.setCursor(0, 0);
-   lcd.print("Sending data");
-   delay(1000);
-   lcd.setCursor(13, 0);
-   lcd.print(".");
-   delay(1000);
-   lcd.setCursor(14, 0);
-   lcd.print(".");
-   delay(1000);
-   lcd.setCursor(15, 0);
-   lcd.print(".");
-   delay(1000);
-   */
-
    read_dust_sensor();
+   send_measurements();
    delay(8000);
 }
